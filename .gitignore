@@ -1,0 +1,22 @@
+# Python / Django
+.venv/
+__pycache__/
+*.pyc
+db.sqlite3
+
+# 环境变量与密钥
+.env
+
+# 上传文件
+media/
+
+# 导学资料库（独立 git 仓库，保持其独立性）
+fvil-ec-guide/
+
+# IDE
+.idea/
+.vscode/
+
+# 系统文件
+.DS_Store
+Thumbs.db
