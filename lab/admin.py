@@ -12,6 +12,6 @@ class LabProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
-    list_display = ["order", "name", "title", "research"]
-    ordering = ["order", "id"]
-    search_fields = ["name", "title"]
+    list_display = ["order", "name", "title", "research"]   # 显示列
+    ordering = ["order", "id"]                              # 默认按 order 排序
+    search_fields = ["name", "title"]                       # 页面中出现搜索框，可以按name和title检索

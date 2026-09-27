@@ -3,10 +3,22 @@
 {% block title %}FVIL 飞行器创新实验室{% endblock %}
 
 {% block content %}
+{% if profile %}
 <div class="text-center py-5">
     <h1 class="display-5">飞行器创新实验室 <span class="text-muted">FVIL</span></h1>
-    <p class="lead mt-3">合肥工业大学 飞行器创新实验室 · 业务平台建设中</p>
-    <p class="text-muted">主页与实验室介绍即将上线，敬请期待。</p>
+    {% if profile.slogan %}<p class="lead mt-3">{{ profile.slogan }}</p>{% endif %}
+    <p class="mt-4 text-secondary">{{ profile.intro|truncatechars:120 }}</p>
+    <div class="mt-4">
+        <a class="btn btn-accent btn-lg" href="/recruit/">招新报名</a>
+        <a class="btn btn-outline-accent btn-lg" href="/about/">了解实验室</a>
+    </div>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <h1 class="display-5">飞行器创新实验室 <span class="text-muted">FVIL</span></h1>
+    <p class="lead mt-3">业务平台建设中</p>
+    <p class="text-muted">请在后台「实验室概况」中填写简介。</p>
     <a class="btn btn-accent mt-3" href="/admin/">管理后台</a>
 </div>
+{% endif %}
 {% endblock %}

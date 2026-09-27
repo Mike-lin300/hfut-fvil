@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}实验室介绍 - FVIL{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <h1 class="mb-3">实验室介绍</h1>
+    {% if profile %}
+    <p class="text-secondary">成立于 {{ profile.founded_year }} 年{% if profile.slogan %} · {{ profile.slogan }}{% endif %}</p>
+    <div class="lead mt-4" style="white-space: pre-line;">{{ profile.intro }}</div>
+    {% if profile.contact %}<p class="mt-4 text-secondary">联系方式：{{ profile.contact }}</p>{% endif %}
+    {% else %}
+    <p class="text-secondary">请在后台「实验室概况」中填写简介。</p>
+    {% endif %}
+</div>
+{% endblock %}
