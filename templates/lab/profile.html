@@ -1,14 +1,45 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}实验室介绍 - FVIL{% endblock %}
 
 {% block content %}
 <div class="py-4">
-    <h1 class="mb-3">实验室介绍</h1>
+    <h1 class="mb-2">实验室介绍</h1>
     {% if profile %}
-    <p class="text-secondary">成立于 {{ profile.founded_year }} 年{% if profile.slogan %} · {{ profile.slogan }}{% endif %}</p>
-    <div class="lead mt-4" style="white-space: pre-line;">{{ profile.intro }}</div>
-    {% if profile.contact %}<p class="mt-4 text-secondary">联系方式：{{ profile.contact }}</p>{% endif %}
+    <p class="text-secondary mb-4">成立于 {{ profile.founded_year }} 年 · 合肥工业大学宣城校区</p>
+
+    <div class="row g-4">
+        <!-- 简介全文 -->
+        <div class="col-lg-8">
+            <div class="lead" style="white-space: pre-line;">{{ profile.intro }}</div>
+
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <img src="{% static 'img/quadcopter.png' %}" class="img-fluid rounded shadow-sm" alt="四旋翼无人机">
+                </div>
+                <div class="col-md-6">
+                    <img src="{% static 'img/hero-fixed-wing.png' %}" class="img-fluid rounded shadow-sm" alt="固定翼飞行器">
+                </div>
+            </div>
+        </div>
+
+        <!-- 信息卡 -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <img src="{% static 'img/team.png' %}" class="card-img-top" alt="实验室成员合影">
+                <div class="card-body">
+                    {% if profile.slogan %}
+                    <p class="card-text"><strong>口号：</strong>{{ profile.slogan }}</p>
+                    {% endif %}
+                    <p class="card-text"><strong>成立：</strong>{{ profile.founded_year }} 年</p>
+                    {% if profile.contact %}
+                    <p class="card-text"><strong>联系方式：</strong>{{ profile.contact }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
     {% else %}
     <p class="text-secondary">请在后台「实验室概况」中填写简介。</p>
     {% endif %}

@@ -1,21 +1,35 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}FVIL 飞行器创新实验室{% endblock %}
 
 {% block content %}
 {% if profile %}
-<div class="text-center py-5">
-    <h1 class="display-5">飞行器创新实验室 <span class="text-muted">FVIL</span></h1>
-    {% if profile.slogan %}<p class="lead mt-3">{{ profile.slogan }}</p>{% endif %}
-    <p class="mt-4 text-secondary">{{ profile.intro|truncatechars:120 }}</p>
-    <div class="mt-4">
-        <a class="btn btn-accent btn-lg" href="/recruit/">招新报名</a>
-        <a class="btn btn-outline-accent btn-lg" href="/about/">了解实验室</a>
+<!-- Hero 区：固定翼剪影图 + 实验室蓝渐变叠层 -->
+<section class="hero" style="background-image: url('{% static 'img/hero-fixed-wing.png' %}');">
+    <div class="hero-overlay">
+        <div class="text-center">
+            <img src="{% static 'img/logo.png' %}" alt="实验室徽标" class="hero-logo">
+            <h1 class="display-4 fw-bold text-white mt-3">飞行器创新实验室 <span class="text-white-50 fs-3">FVIL</span></h1>
+            {% if profile.slogan %}<p class="lead text-white mt-3">{{ profile.slogan }}</p>{% endif %}
+            <p class="text-white-50 mt-2">合肥工业大学宣城校区 · 成立于 {{ profile.founded_year }} 年</p>
+            <div class="mt-4">
+                <a class="btn btn-accent btn-lg me-2" href="/recruit/">招新报名</a>
+                <a class="btn btn-outline-light btn-lg" href="/about/">了解实验室</a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
+
+<!-- 简介摘要 -->
+<section class="py-4">
+    <p class="lead text-secondary mb-2">{{ profile.intro|truncatechars:160 }}</p>
+    <a href="/about/">了解更多 →</a>
+</section>
 {% else %}
 <div class="text-center py-5">
-    <h1 class="display-5">飞行器创新实验室 <span class="text-muted">FVIL</span></h1>
+    <img src="{% static 'img/logo.png' %}" alt="实验室徽标" height="96">
+    <h1 class="display-5 mt-3">飞行器创新实验室 <span class="text-muted">FVIL</span></h1>
     <p class="lead mt-3">业务平台建设中</p>
     <p class="text-muted">请在后台「实验室概况」中填写简介。</p>
     <a class="btn btn-accent mt-3" href="/admin/">管理后台</a>

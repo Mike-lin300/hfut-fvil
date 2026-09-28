@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}指导老师 - FVIL{% endblock %}
 
@@ -9,7 +10,14 @@
     <div class="row g-4">
         {% for t in teachers %}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
+            <div class="card h-100 shadow-sm">
+                {% if t.photo %}
+                <img src="{{ t.photo.url }}" class="card-img-top" alt="{{ t.name }}" style="height: 240px; object-fit: cover;">
+                {% else %}
+                <div class="text-center py-5 bg-light">
+                    <span class="text-secondary">暂无照片</span>
+                </div>
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ t.name }}</h5>
                     {% if t.title %}<h6 class="card-subtitle mb-2 text-muted">{{ t.title }}</h6>{% endif %}

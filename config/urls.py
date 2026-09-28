@@ -2,6 +2,8 @@
 URL configuration for config project.
 """
 
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
@@ -19,3 +21,7 @@ urlpatterns = [
     path("about/teachers/", teachers, name="lab_teachers"),
     path("recruit/", recruit, name="recruit"),
 ]
+
+# 开发环境服务用户上传的媒体文件（生产环境由 Web 服务器处理）
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
