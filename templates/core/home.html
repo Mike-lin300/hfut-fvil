@@ -9,10 +9,10 @@
 <section class="hero" style="background-image: url('{% static 'img/hero-fixed-wing.png' %}');">
     <div class="hero-overlay">
         <div class="text-center">
-            <img src="{% static 'img/logo.png' %}" alt="实验室徽标" class="hero-logo">
+            <img src="{% static 'img/logo.png' %}" alt="实验室徽标" class="hero-logo" style="height:96px; width:96px; object-fit:contain;">
             <h1 class="display-4 fw-bold text-white mt-3">飞行器创新实验室 <span class="text-white-50 fs-3">FVIL</span></h1>
             {% if profile.slogan %}<p class="lead text-white mt-3">{{ profile.slogan }}</p>{% endif %}
-            <p class="text-white-50 mt-2">合肥工业大学宣城校区 · 成立于 {{ profile.founded_year }} 年</p>
+            <p class="text-white-50 mt-2">HFUT Flight Vehicle Innovation Laboratory · Established in {{ profile.founded_year }} 年</p>
             <div class="mt-4">
                 <a class="btn btn-accent btn-lg me-2" href="/recruit/">招新报名</a>
                 <a class="btn btn-outline-light btn-lg" href="/about/">了解实验室</a>
@@ -28,7 +28,7 @@
 </section>
 {% else %}
 <div class="text-center py-5">
-    <img src="{% static 'img/logo.png' %}" alt="实验室徽标" height="96">
+    <img src="{% static 'img/logo.png' %}" alt="实验室徽标" class="hero-logo" style="height:96px; width:96px; object-fit:contain;">
     <h1 class="display-5 mt-3">飞行器创新实验室 <span class="text-muted">FVIL</span></h1>
     <p class="lead mt-3">业务平台建设中</p>
     <p class="text-muted">请在后台「实验室概况」中填写简介。</p>

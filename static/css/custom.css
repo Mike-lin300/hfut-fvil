@@ -89,16 +89,15 @@ a,
 }
 
 .hero-overlay {
-    background: linear-gradient(180deg, rgba(31, 111, 235, 0.82), rgba(20, 87, 184, 0.92));
+    background: linear-gradient(180deg, rgba(31, 111, 235, 0.33), rgba(20, 87, 184, 0.37));
     padding: 5rem 0;
 }
 
 .hero-logo {
     height: 96px;
-    width: auto;
+    width: 96px;
+    object-fit: contain;
     border-radius: 50%;
-    background: #fff;
-    padding: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
