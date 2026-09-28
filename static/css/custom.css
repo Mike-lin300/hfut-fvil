@@ -9,6 +9,7 @@ body {
     min-height: 100vh;
     color: #1a1a1a;
     background-color: #ffffff;
+    line-height: 1.7;
 }
 
 main {
@@ -19,6 +20,13 @@ a {
     color: var(--accent);
 }
 
+a,
+.btn,
+.card {
+    transition: all 0.2s ease;
+}
+
+/* ===== 按钮主题 ===== */
 .btn-accent {
     background-color: var(--accent);
     color: #fff;
@@ -27,9 +35,9 @@ a {
 .btn-accent:hover {
     background-color: var(--accent-dark);
     color: #fff;
+    transform: translateY(-1px);
 }
 
-/* 招新入口等强调按钮 */
 .btn-outline-accent {
     border: 1px solid var(--accent);
     color: var(--accent);
@@ -38,6 +46,39 @@ a {
 .btn-outline-accent:hover {
     background-color: var(--accent);
     color: #fff;
+}
+
+/* ===== 导航 ===== */
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #fff;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+}
+
+/* ===== 卡片 ===== */
+.card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 4px rgba(31, 111, 235, 0.08);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(31, 111, 235, 0.15);
+}
+
+.card-img-top {
+    object-fit: cover;
+    border-radius: 0.75rem 0.75rem 0 0;
 }
 
 /* ===== 主页 hero ===== */
@@ -61,7 +102,22 @@ a {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* 卡片图片统一切图 */
-.card-img-top {
-    object-fit: cover;
+/* ===== 响应式（手机 375px） ===== */
+@media (max-width: 576px) {
+    .hero-overlay {
+        padding: 3.5rem 0;
+    }
+
+    .hero .display-4 {
+        font-size: 2rem;
+    }
+
+    .hero .btn-lg {
+        font-size: 1rem;
+        padding: 0.5rem 0.9rem;
+    }
+
+    .hero-logo {
+        height: 72px;
+    }
 }
