@@ -10,6 +10,8 @@ body {
     color: #1a1a1a;
     background-color: #ffffff;
     line-height: 1.7;
+    /* 防止全宽轮播突破容器时，垂直滚动条导致的横向溢出 */
+    overflow-x: hidden;
 }
 
 main {
@@ -81,16 +83,23 @@ a,
     border-radius: 0.75rem 0.75rem 0 0;
 }
 
-/* ===== 主页 hero ===== */
-.hero {
-    position: relative;
-    background-size: cover;
-    background-position: center;
+/* ===== 主页 hero：全屏轮播 ===== */
+.hero-carousel {
+    /* 固定高度：减去导航栏高度（76px 为估算值，可视情况微调） */
+    height: calc(100vh - 76px);
+    /* 防止小屏幕高度过低 */
+    min-height: 500px;
 }
 
-.hero-overlay {
-    background: linear-gradient(180deg, rgba(31, 111, 235, 0.33), rgba(20, 87, 184, 0.37));
-    padding: 5rem 0;
+.hero-carousel .carousel-inner,
+.hero-carousel .carousel-item {
+    height: 100%;
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 裁剪图片以填充容器，不变形 */
 }
 
 .hero-logo {
@@ -103,17 +112,8 @@ a,
 
 /* ===== 响应式（手机 375px） ===== */
 @media (max-width: 576px) {
-    .hero-overlay {
-        padding: 3.5rem 0;
-    }
-
-    .hero .display-4 {
-        font-size: 2rem;
-    }
-
-    .hero .btn-lg {
-        font-size: 1rem;
-        padding: 0.5rem 0.9rem;
+    .hero-brand h1 {
+        font-size: 1.75rem; /* 移动端防止口号与徽章横向溢出 */
     }
 
     .hero-logo {

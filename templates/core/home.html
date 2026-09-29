@@ -1,33 +1,56 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block main_class %}container-fluid p-0{% endblock %}
+
 {% block title %}FVIL 飞行器创新实验室{% endblock %}
 
 {% block content %}
 {% if profile %}
-<!-- Hero 区：固定翼剪影图 + 实验室蓝渐变叠层 -->
-<section class="hero" style="background-image: url('{% static 'img/hero-fixed-wing.png' %}');">
-    <div class="hero-overlay">
-        <div class="text-center">
-            <img src="{% static 'img/logo.png' %}" alt="实验室徽标" class="hero-logo" style="height:96px; width:96px; object-fit:contain;">
-            <h1 class="display-4 fw-bold text-white mt-3">飞行器创新实验室 <span class="text-white-50 fs-3">FVIL</span></h1>
-            {% if profile.slogan %}<p class="lead text-white mt-3">{{ profile.slogan }}</p>{% endif %}
-            <p class="text-white-50 mt-2">HFUT Flight Vehicle Innovation Laboratory · Established in {{ profile.founded_year }} 年</p>
-            <div class="mt-4">
-                <a class="btn btn-accent btn-lg me-2" href="/recruit/">招新报名</a>
-                <a class="btn btn-outline-light btn-lg" href="/about/">了解实验室</a>
-            </div>
+<!-- Hero 区：Bootstrap 5 全屏轮播 + 左上角品牌区 + 右下角按钮 -->
+<section class="carousel slide hero-carousel position-relative" data-bs-ride="carousel">
+    <!-- 轮播图片 -->
+    <div class="carousel-inner h-100">
+        <div class="carousel-item active h-100">
+            <img src="{% static 'img/hero-1.png' %}" class="d-block w-100 h-100 hero-img" alt="海报页">
+        </div>
+        <div class="carousel-item h-100">
+            <img src="{% static 'img/hero-2.png' %}" class="d-block w-100 h-100 hero-img" alt="霞光云海中的飞行器剪影">
+        </div>
+        <div class="carousel-item h-100">
+            <img src="{% static 'img/hero-3.jpg' %}" class="d-block w-100 h-100 hero-img" alt="2026 中国大学生飞行器设计创新大赛东部赛区航模飞行">
+        </div>
+        <div class="carousel-item h-100">
+            <img src="{% static 'img/hero-4.png' %}" class="d-block w-100 h-100 hero-img" alt="室内无人机与地面小车协同测试">
+        </div>
+        <div class="carousel-item h-100">
+            <img src="{% static 'img/hero-5.jpg' %}" class="d-block w-100 h-100 hero-img" alt="航模无人机草地试飞准备">
+        </div>
+    </div>
+    <!-- 左上角品牌区 -->
+    <div class="hero-brand position-absolute top-0 start-0 p-4 p-lg-5" style="z-index: 10;">
+        <div class="d-flex align-items-center gap-3">
+            <img src="{% static 'img/logo.png' %}" alt="实验室徽标" class="rounded-4" style="height:72px; width:72px; object-fit:cover;">
+            <h1 class="display-5 fw-bold text-white mb-0">凌云创智，空天争锋</h1>
+        </div>
+        <p class="text-white-50 fs-6 mt-2 mb-0">HFUT Flight Vehicle Innovation Laboratory · Established in {{ profile.founded_year }}.</p>
+    </div>
+    <!-- 右下角按钮组 -->
+    <div class="position-absolute bottom-0 end-0 p-4 p-lg-5" style="z-index: 10;">
+        <div class="d-flex gap-2">
+            <a class="btn btn-accent" href="/recruit/">招新报名</a>
+            <a class="btn btn-outline-light" href="/about/">了解实验室</a>
         </div>
     </div>
 </section>
 
 <!-- 简介摘要 -->
-<section class="py-4">
+<section class="container py-4">
     <p class="lead text-secondary mb-2">{{ profile.intro|truncatechars:160 }}</p>
     <a href="/about/">了解更多 →</a>
 </section>
 {% else %}
-<div class="text-center py-5">
+<div class="container text-center py-5">
     <img src="{% static 'img/logo.png' %}" alt="实验室徽标" class="hero-logo" style="height:96px; width:96px; object-fit:contain;">
     <h1 class="display-5 mt-3">飞行器创新实验室 <span class="text-muted">FVIL</span></h1>
     <p class="lead mt-3">业务平台建设中</p>
