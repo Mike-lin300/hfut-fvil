@@ -131,6 +131,9 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# 导学站静态展示（T2-1 临时方案，不开 app；后期由 doclib app 接管）
+GUIDE_ROOT = BASE_DIR / "fvil-ec-guide" / "web"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

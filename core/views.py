@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render
+from django.views.static import serve
 
 from lab.models import LabProfile
 
@@ -12,3 +14,8 @@ def home(request):
 def recruit(request):
     """招新占位页：阶段2 接入真实报名。"""
     return render(request, "core/recruit.html")
+
+
+def guide(request, path=""):
+    """导学站静态展示（T2-1 临时方案）：实时读盘 fvil-ec-guide/web，空路径默认 index.html。"""
+    return serve(request, path or "index.html", document_root=settings.GUIDE_ROOT)
