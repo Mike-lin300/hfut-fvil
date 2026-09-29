@@ -8,7 +8,15 @@
 {% block content %}
 {% if profile %}
 <!-- Hero 区：Bootstrap 5 全屏轮播 + 左上角品牌区 + 右下角按钮 -->
-<section class="carousel slide hero-carousel position-relative" data-bs-ride="carousel">
+<section id="heroCarousel" class="carousel slide hero-carousel position-relative" data-bs-ride="carousel" data-bs-interval="5000">
+    <!-- 轮播指示点 -->
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="第 1 张"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="第 2 张"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="第 3 张"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="第 4 张"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="第 5 张"></button>
+    </div>
     <!-- 轮播图片 -->
     <div class="carousel-inner h-100">
         <div class="carousel-item active h-100">
@@ -27,6 +35,15 @@
             <img src="{% static 'img/hero-5.jpg' %}" class="d-block w-100 h-100 hero-img" alt="航模无人机草地试飞准备">
         </div>
     </div>
+    <!-- 左右切换箭头 -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">上一张</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">下一张</span>
+    </button>
     <!-- 左上角品牌区 -->
     <div class="hero-brand position-absolute top-0 start-0 p-4 p-lg-5" style="z-index: 10;">
         <div class="d-flex align-items-center gap-3">
