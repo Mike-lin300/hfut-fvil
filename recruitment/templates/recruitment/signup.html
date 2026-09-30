@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}报名 - FVIL{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm mt-4">
+            <div class="card-body p-4">
+                <h1 class="h4 mb-3">报名加入实验室</h1>
+
+                {% if closed %}
+                <div class="alert alert-warning">当前没有开放中的招新批次，暂无法报名。请关注实验室通知。</div>
+                <a class="btn btn-outline-accent" href="/recruit/">返回招新首页</a>
+                {% else %}
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-accent w-100">提交报名</button>
+                </form>
+                <p class="text-muted small mt-3 mb-0">报名成功后，可凭学号 + 姓名在「成绩查询」查看各轮次等级。</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

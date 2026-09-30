@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}成绩查询 - FVIL{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm mt-4">
+            <div class="card-body p-4">
+                <h1 class="h4 mb-3">成绩查询</h1>
+                <p class="text-muted small mb-3">输入报名时填写的学号与姓名，查询本人各轮次的等级与评价。</p>
+
+                <form method="get">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label" for="{{ form.student_id.id_for_label }}">{{ form.student_id.label }}</label>
+                            {{ form.student_id }}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-accent w-100">查询</button>
+                        </div>
+                    </div>
+                    {% for error in form.non_field_errors %}
+                    <div class="alert alert-warning mt-3 mb-0">{{ error }}</div>
+                    {% endfor %}
+                </form>
+
+                {% if result %}
+                <hr>
+                <p class="mb-2">
+                    <strong>{{ result.name }}</strong>（{{ result.student_id }}）·
+                    {{ result.batch.name }} · 状态：{{ result.get_status_display }}
+                </p>
+                {% if result.scores.all %}
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>轮次</th>
+                            <th>类型</th>
+                            <th>等级</th>
+                            <th>评价</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in result.scores.all %}
+                        <tr>
+                            <td>{{ s.round.name }}</td>
+                            <td>{{ s.round.get_round_type_display }}</td>
+                            <td><span class="badge text-bg-primary">{{ s.grade }}</span></td>
+                            <td class="text-secondary">{{ s.comment|default:"—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted mt-3 mb-0">暂无成绩记录，请耐心等待。</p>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <p>为选中的 <strong>{{ applicants|length }}</strong> 名报名者批量录入成绩（已存在成绩的报名者会被跳过）：</p>
+
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>学号</th>
+                <th>批次</th>
+                <th>当前状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in applicants %}
+            <tr>
+                <td>{{ a.name }}</td>
+                <td>{{ a.student_id }}</td>
+                <td>{{ a.batch }}</td>
+                <td>{{ a.get_status_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label class="form-label" for="round_id">轮次</label>
+            <select class="form-select" name="round_id" id="round_id" required>
+                {% for r in rounds %}
+                <option value="{{ r.id }}">{{ r.batch.name }} · {{ r.name }}（{{ r.get_round_type_display }}）</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="grade">等级</label>
+            <select class="form-select" name="grade" id="grade" required>
+                {% for v, label in grades %}
+                <option value="{{ v }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label class="form-label" for="comment">评价（可选）</label>
+            <textarea class="form-control" name="comment" id="comment" rows="1" placeholder="验收人员的文本评价"></textarea>
+        </div>
+    </div>
+
+    <input type="hidden" name="apply" value="1">
+    <input type="hidden" name="action" value="bulk_score">
+    <input type="hidden" name="index" value="0">
+    {% for a in applicants %}<input type="hidden" name="_selected_action" value="{{ a.pk }}">{% endfor %}
+
+    <button type="submit" class="btn btn-primary">保存成绩</button>
+    <a class="btn btn-secondary" href="{% url 'admin:recruitment_applicant_changelist' %}">取消</a>
+</form>
+{% endblock %}

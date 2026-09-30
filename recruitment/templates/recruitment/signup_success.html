@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}报名成功 - FVIL{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm mt-4">
+            <div class="card-body text-center py-5">
+                <h1 class="h4 mb-3">报名成功</h1>
+                <p class="mb-1">姓名：<strong>{{ applicant.name }}</strong></p>
+                <p class="mb-1">学号：<strong>{{ applicant.student_id }}</strong></p>
+                <p class="mb-3">批次：{{ applicant.batch.name }}</p>
+                <p class="text-muted small mb-4">后续培训安排请留意实验室通知。</p>
+                <div class="d-flex gap-2 justify-content-center">
+                    <a class="btn btn-accent" href="/recruit/query/">成绩查询</a>
+                    <a class="btn btn-outline-accent" href="/recruit/">返回招新首页</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

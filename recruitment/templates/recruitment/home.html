@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}招新报名 - FVIL{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <h1 class="mb-3">招新报名</h1>
+
+    {% if current %}
+    <div class="alert alert-primary">
+        <strong>{{ current.name }}</strong> 正在报名中
+        {% if current.signup_start and current.signup_end %}
+        （{{ current.signup_start|date:"Y-m-d" }} ~ {{ current.signup_end|date:"Y-m-d" }}）
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="alert alert-secondary">当前没有开放中的招新批次，请关注实验室通知。</div>
+    {% endif %}
+
+    <div class="row g-3 mt-2">
+        <div class="col-md-6">
+            <a class="btn btn-accent w-100 py-3" href="/recruit/signup/">我要报名</a>
+        </div>
+        <div class="col-md-6">
+            <a class="btn btn-outline-accent w-100 py-3" href="/recruit/query/">成绩查询</a>
+        </div>
+    </div>
+
+    {% if batches %}
+    <h2 class="h5 mt-4 mb-2">历届批次</h2>
+    <ul class="list-group">
+        {% for b in batches %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ b.name }}</span>
+            <span class="badge {% if b.status == 'open' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ b.get_status_display }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

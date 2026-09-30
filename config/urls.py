@@ -5,9 +5,9 @@ URL configuration for config project.
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import include, path, re_path
 
-from core.views import guide, home, recruit
+from core.views import guide, home
 from lab.views import profile, teachers
 
 admin.site.site_header = "FVIL 飞行器创新实验室管理后台"
@@ -19,7 +19,7 @@ urlpatterns = [
     path("", home, name="home"),
     path("about/", profile, name="lab_profile"),
     path("about/teachers/", teachers, name="lab_teachers"),
-    path("recruit/", recruit, name="recruit"),
+    path("recruit/", include("recruitment.urls")),
     re_path(r"^guide/(?P<path>.*)$", guide, name="guide"),
 ]
 
