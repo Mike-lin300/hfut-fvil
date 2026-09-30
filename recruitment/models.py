@@ -40,7 +40,7 @@ class Applicant(models.Model):
 
     name = models.CharField("姓名", max_length=30)
     student_id = models.CharField("学号", max_length=20, unique=True)
-    grade = models.CharField("年级", max_length=10, help_text="如：2026")
+    grade = models.CharField("年级", max_length=10)
     major = models.CharField("专业", max_length=50)
     contact = models.CharField("联系方式", max_length=50, blank=True)
     batch = models.ForeignKey(

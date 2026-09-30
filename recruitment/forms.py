@@ -8,27 +8,27 @@ class SignupForm(forms.ModelForm):
 
     class Meta:
         model = Applicant
-        fields = ["name", "student_id", "grade", "major", "contact"]
+        fields = ["name", "student_id", "major", "contact"]
         labels = {
             "name": "姓名",
             "student_id": "学号",
-            "grade": "年级",
             "major": "专业",
             "contact": "联系方式",
         }
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的姓名"}),
-            "student_id": forms.TextInput(attrs={"class": "form-control", "placeholder": "10 位学号"}),
-            "grade": forms.TextInput(attrs={"class": "form-control", "placeholder": "如 2026"}),
-            "major": forms.TextInput(attrs={"class": "form-control", "placeholder": "如 计算机科学与技术"}),
-            "contact": forms.TextInput(attrs={"class": "form-control", "placeholder": "选填，推荐 QQ"}),
+            "student_id": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的学号"}),
+            "major": forms.TextInput(attrs={"class": "form-control", "placeholder": "如 软件工程"}),
+            "contact": forms.TextInput(attrs={"class": "form-control", "placeholder": "使用 QQ 号"}),
         }
         help_texts = {"contact": "选填，方便实验室联系你"}
 
     def clean_student_id(self):
         sid = self.cleaned_data["student_id"].strip()
+        if not sid.isdigit() or len(sid) != 10:
+            raise forms.ValidationError("请输入正确的学号格式")
         if Applicant.objects.filter(student_id=sid).exists():
-            raise forms.ValidationError("该学号已报名，请勿重复提交。")
+            raise forms.ValidationError("该学号已报名，请勿重复提交（如有错误，请联系负责人）。")
         return sid
 
     def clean_name(self):
@@ -37,6 +37,7 @@ class SignupForm(forms.ModelForm):
     def save(self, batch, commit=True):
         applicant = super().save(commit=False)
         applicant.batch = batch
+        applicant.grade = self.cleaned_data["student_id"][:4]   # 根据学号的特征，年级是前 4 位，可以计算得出
         if commit:
             applicant.save()
         return applicant
@@ -48,7 +49,7 @@ class QueryForm(forms.Form):
     student_id = forms.CharField(
         label="学号",
         max_length=20,
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "10 位学号"}),
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "你的学号"}),
     )
     name = forms.CharField(
         label="姓名",
