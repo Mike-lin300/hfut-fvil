@@ -13,9 +13,9 @@ class BatchAdmin(admin.ModelAdmin):
 
 @admin.register(Applicant)
 class ApplicantAdmin(admin.ModelAdmin):
-    list_display = ["name", "student_id", "grade", "major", "batch", "status", "signup_time"]
+    list_display = ["sid", "name", "student_id", "grade", "major", "batch", "status", "signup_time"]
     list_filter = ["batch", "status", "grade"]
-    search_fields = ["name", "student_id", "major"]
+    search_fields = ["sid", "name", "student_id", "major"]
     list_per_page = 50
     actions = ["bulk_score"]
 

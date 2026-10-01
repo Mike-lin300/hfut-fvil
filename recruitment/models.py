@@ -40,6 +40,7 @@ class Applicant(models.Model):
 
     name = models.CharField("姓名", max_length=30)
     student_id = models.CharField("学号", max_length=20, unique=True)
+    sid = models.PositiveIntegerField("学生编号", unique=True)
     grade = models.CharField("年级", max_length=10)
     major = models.CharField("专业", max_length=50)
     contact = models.CharField("联系方式", max_length=50, blank=True)
@@ -54,6 +55,13 @@ class Applicant(models.Model):
         ordering = ["-signup_time"]
         verbose_name = "报名者"
         verbose_name_plural = "报名者"
+
+    def save(self, *args, **kwargs):
+        """新建时自动分配学生编号 sid（从 1 连续自增，管理用；学号仍为 student_id）。"""
+        if self.sid is None:
+            last = Applicant.objects.order_by("-sid").first()
+            self.sid = (last.sid if last else 0) + 1
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name}({self.student_id})"

@@ -61,24 +61,24 @@ def export(request):
     wb = openpyxl.Workbook()
     ws1 = wb.active
     ws1.title = "报名名单"
-    ws1.append(["批次", "姓名", "学号", "年级", "专业", "联系方式", "状态", "报名时间", "备注"])
-    qs1 = Applicant.objects.select_related("batch").order_by("batch_id", "student_id")
+    ws1.append(["编号", "批次", "姓名", "学号", "年级", "专业", "联系方式", "状态", "报名时间", "备注"])
+    qs1 = Applicant.objects.select_related("batch").order_by("batch_id", "sid")
     for a in qs1:
         ws1.append([
-            a.batch.name, a.name, a.student_id, a.grade, a.major, a.contact,
+            a.sid, a.batch.name, a.name, a.student_id, a.grade, a.major, a.contact,
             a.get_status_display(),
             a.signup_time.strftime("%Y-%m-%d %H:%M") if a.signup_time else "",
             a.remark,
         ])
 
     ws2 = wb.create_sheet("成绩")
-    ws2.append(["批次", "姓名", "学号", "轮次", "等级", "评价", "录入人", "录入时间"])
+    ws2.append(["编号", "批次", "姓名", "学号", "轮次", "等级", "评价", "录入人", "录入时间"])
     qs2 = Score.objects.select_related("applicant__batch", "round", "entered_by").order_by(
-        "applicant__batch_id", "applicant__student_id", "round_id"
+        "applicant__batch_id", "applicant__sid", "round_id"
     )
     for s in qs2:
         ws2.append([
-            s.applicant.batch.name, s.applicant.name, s.applicant.student_id,
+            s.applicant.sid, s.applicant.batch.name, s.applicant.name, s.applicant.student_id,
             s.round.name, s.grade, s.comment,
             s.entered_by.username if s.entered_by else "",
             s.entered_at.strftime("%Y-%m-%d %H:%M") if s.entered_at else "",
