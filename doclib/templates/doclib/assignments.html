@@ -16,12 +16,19 @@
                     <div class="text-muted small mb-2">
                         {{ a.batch.name }}
                         {% if a.deadline %} · 截止 {{ a.deadline|date:"Y-m-d H:i" }}{% endif %}
+                        {% if a.deadline and now > a.deadline %}
+                        <span class="badge text-bg-secondary ms-1">已截止</span>
+                        {% endif %}
                     </div>
                     {% if a.description %}<p class="card-text">{{ a.description|linebreaksbr }}</p>{% endif %}
                 </div>
                 <div class="d-flex gap-2 flex-shrink-0">
                     <a class="btn btn-outline-accent" href="{{ a.file.url }}" download>下载作业</a>
+                    {% if a.deadline and now > a.deadline %}
+                    <button class="btn btn-secondary" disabled>已截止</button>
+                    {% else %}
                     <a class="btn btn-accent" href="/assignments/{{ a.id }}/submit/">提交作业</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -10,6 +10,11 @@
     {% if ok %}
     <div class="alert alert-success">提交成功！同一学号仅可提交一份；如需修改请联系负责人。</div>
     <a class="btn btn-outline-accent" href="/assignments/">返回作业列表</a>
+    {% elif deadline_passed %}
+    <div class="alert alert-danger">
+        该作业已于 <strong>{{ assignment.deadline|date:"Y-m-d H:i" }}</strong> 截止，<strong>已停止接收提交</strong>。
+    </div>
+    <a class="btn btn-outline-accent" href="/assignments/">返回作业列表</a>
     {% else %}
     <div class="alert alert-primary small">
         请提交<strong>两份材料</strong>：报告（<code>学号_姓名_report.pdf</code>）+ 源代码（<code>学号_姓名_source.zip</code>）。
