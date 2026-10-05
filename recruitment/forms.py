@@ -33,7 +33,9 @@ class SignupForm(forms.ModelForm):
     major = forms.ChoiceField(
         label="专业",
         choices=MAJOR_CHOICES,
-        widget=forms.Select(attrs={"class": "form-control"}),
+        # size=6：原生 select 弹出层高度无法用 CSS 限制，改为固定 6 行列表框，
+        # 超长时滚轮 / 滚动条滚动，避免 18 个专业撑满整页
+        widget=forms.Select(attrs={"class": "form-control", "size": "6"}),
     )
 
     class Meta:
