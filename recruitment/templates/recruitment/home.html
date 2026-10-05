@@ -7,19 +7,29 @@
     <h1 class="mb-3">招新报名</h1>
 
     {% if current %}
+    {% if current.signup_end and now > current.signup_end %}
+    <div class="alert alert-danger">
+        <strong>{{ current.name }}</strong> 报名已截止（{{ current.signup_end|date:"Y-m-d H:i" }}），停止接收报名。
+    </div>
+    {% else %}
     <div class="alert alert-primary">
         <strong>{{ current.name }}</strong> 正在报名中
         {% if current.signup_start and current.signup_end %}
         （{{ current.signup_start|date:"Y-m-d" }} ~ {{ current.signup_end|date:"Y-m-d" }}）
         {% endif %}
     </div>
+    {% endif %}
     {% else %}
     <div class="alert alert-secondary">当前没有开放中的招新批次，请关注实验室通知。</div>
     {% endif %}
 
     <div class="row g-3 mt-2">
         <div class="col-md-6">
+            {% if current.signup_end and now > current.signup_end %}
+            <button class="btn btn-secondary w-100 py-3" disabled>报名已截止</button>
+            {% else %}
             <a class="btn btn-accent w-100 py-3" href="/recruit/signup/">我要报名</a>
+            {% endif %}
         </div>
         <div class="col-md-6">
             <a class="btn btn-outline-accent w-100 py-3" href="/recruit/query/">成绩查询</a>

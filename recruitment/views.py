@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render
+from django.utils import timezone
 
 import openpyxl
 
@@ -8,28 +9,48 @@ from .forms import QueryForm, SignupForm
 from .models import Applicant, Batch, Score
 
 
+def _signup_open(batch):
+    """批次是否仍可报名：status=open 且未过报名截止时间（signup_end 为空则视为不限时）。"""
+    if batch is None or batch.status != "open":
+        return False
+    return batch.signup_end is None or timezone.now() <= batch.signup_end
+
+
 def recruit_home(request):
     """招新入口：当前批次状态 + 报名/查询入口。"""
     current = Batch.objects.filter(status="open").order_by("-id").first()
     batches = Batch.objects.order_by("-id")[:5]
-    return render(request, "recruitment/home.html", {"current": current, "batches": batches})
+    return render(
+        request,
+        "recruitment/home.html",
+        {"current": current, "batches": batches, "now": timezone.now()},
+    )
 
 
 def signup(request):
-    """报名：仅当前存在 status=open 批次时可提交；学号唯一（表单校验 + DB 兜底）；不收集意向方向。"""
+    """报名：仅当前存在 status=open 且未过 signup_end 的批次时可提交；
+    学号唯一（表单校验 + DB 兜底）；不收集意向方向。"""
     current = Batch.objects.filter(status="open").order_by("-id").first()
+    can_signup = _signup_open(current)
+    signup_ended = current is not None and not can_signup
+
     if request.method == "POST":
         form = SignupForm(request.POST)
-        if not current:
+        if not can_signup:
             return render(
                 request, "recruitment/signup.html",
-                {"form": form, "current": None, "closed": True},
+                {"form": None, "current": current,
+                 "closed": current is None, "signup_ended": signup_ended},
             )
         if form.is_valid():
             applicant = form.save(batch=current)
             return render(request, "recruitment/signup_success.html", {"applicant": applicant})
         return render(request, "recruitment/signup.html", {"form": form, "current": current})
-    return render(request, "recruitment/signup.html", {"form": SignupForm(), "current": current})
+    return render(
+        request, "recruitment/signup.html",
+        {"form": SignupForm() if can_signup else None, "current": current,
+         "closed": current is None, "signup_ended": signup_ended},
+    )
 
 
 def query(request):

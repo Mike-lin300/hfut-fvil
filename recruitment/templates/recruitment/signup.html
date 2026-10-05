@@ -12,6 +12,12 @@
                 {% if closed %}
                 <div class="alert alert-warning">当前没有开放中的招新批次，暂无法报名。请关注实验室通知。</div>
                 <a class="btn btn-outline-accent" href="/recruit/">返回招新首页</a>
+                {% elif signup_ended %}
+                <div class="alert alert-danger">
+                    批次 <strong>{{ current.name }}</strong> 报名已于
+                    <strong>{{ current.signup_end|date:"Y-m-d H:i" }}</strong> 截止，<strong>已停止接收报名</strong>。
+                </div>
+                <a class="btn btn-outline-accent" href="/recruit/">返回招新首页</a>
                 {% else %}
 
                 {% if form.non_field_errors %}
