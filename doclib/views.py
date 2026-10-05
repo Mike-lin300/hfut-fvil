@@ -45,7 +45,10 @@ def assignment_submit(request, pk):
             form = SubmissionForm(request.POST, request.FILES, assignment=assignment)
             if form.is_valid():
                 form.save()
-                return redirect(f"{reverse('assignment_submit', args=[pk])}?ok=1")
+                url = f"{reverse('assignment_submit', args=[pk])}?ok=1"
+                if form.replaced:
+                    url += "&replaced=1"
+                return redirect(url)
     else:
         form = None if deadline_passed else SubmissionForm(assignment=assignment)
     return render(
@@ -55,6 +58,7 @@ def assignment_submit(request, pk):
             "assignment": assignment,
             "form": form,
             "ok": request.GET.get("ok") == "1",
+            "replaced": request.GET.get("replaced") == "1",
             "deadline_passed": deadline_passed,
         },
     )

@@ -43,7 +43,7 @@ class Applicant(models.Model):
     sid = models.PositiveIntegerField("学生编号", unique=True)
     grade = models.CharField("年级", max_length=10)
     major = models.CharField("专业", max_length=50)
-    contact = models.CharField("联系方式", max_length=50, blank=True)
+    contact = models.CharField("QQ号", max_length=50, help_text="必填，保证消息通畅")
     batch = models.ForeignKey(
         Batch, verbose_name="批次", on_delete=models.CASCADE, related_name="applicants"
     )

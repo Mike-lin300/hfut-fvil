@@ -8,7 +8,11 @@
     <div class="text-muted mb-3">{{ assignment.batch.name }} · {{ assignment.title }}</div>
 
     {% if ok %}
-    <div class="alert alert-success">提交成功！同一学号仅可提交一份；如需修改请联系负责人。</div>
+    {% if replaced %}
+    <div class="alert alert-success">已重新提交，<strong>已覆盖</strong>上次提交内容（提交时间已更新）。</div>
+    {% else %}
+    <div class="alert alert-success">提交成功！同一学号再次提交将覆盖上次内容。</div>
+    {% endif %}
     <a class="btn btn-outline-accent" href="/assignments/">返回作业列表</a>
     {% elif deadline_passed %}
     <div class="alert alert-danger">

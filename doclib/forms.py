@@ -1,6 +1,7 @@
 import re
 
 from django import forms
+from django.utils import timezone
 
 from recruitment.models import Applicant
 from .models import Submission
@@ -37,6 +38,7 @@ class SubmissionForm(forms.ModelForm):
     def __init__(self, *args, assignment=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.assignment = assignment
+        self.replaced = False  # save() 后为 True 表示本次是覆盖上次提交
 
     def clean_student_id(self):
         sid = self.cleaned_data["student_id"].strip()
@@ -91,20 +93,36 @@ class SubmissionForm(forms.ModelForm):
             if m.group("kind") != expect:
                 self.add_error(field, f"报告与源代码文件放反了：{field} 应命名为 …_{expect}.…")
 
-        # 3) 同一作业同一学号仅一份
-        if self.assignment and Submission.objects.filter(
-            assignment=self.assignment, student_id=sid
-        ).exists():
-            self.add_error(None, "该作业你已经提交过，同一学号仅可提交一份（如需修改请联系负责人）。")
-
         return cleaned
 
     def save(self, commit=True):
+        sid = self.cleaned_data["student_id"]
+        name = self.cleaned_data["name"]
+        applicant = Applicant.objects.filter(student_id=sid, name=name).first()
+        existing = None
+        if self.assignment:
+            existing = Submission.objects.filter(
+                assignment=self.assignment, student_id=sid
+            ).first()
+
+        if existing is not None:
+            # 覆盖写入：替换两份文件（旧文件删除防堆积）、提交时间更新为本次
+            self.replaced = True
+            sub = existing
+            sub.applicant = applicant
+            sub.name = name
+            sub.report.delete(save=False)
+            sub.source.delete(save=False)
+            sub.report = self.cleaned_data["report"]
+            sub.source = self.cleaned_data["source"]
+            sub.submitted_at = timezone.now()
+            if commit:
+                sub.save()
+            return sub
+
         sub = super().save(commit=False)
         sub.assignment = self.assignment
-        sub.applicant = Applicant.objects.filter(
-            student_id=self.cleaned_data["student_id"], name=self.cleaned_data["name"]
-        ).first()
+        sub.applicant = applicant
         if commit:
             sub.save()
         return sub

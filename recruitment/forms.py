@@ -13,15 +13,21 @@ class SignupForm(forms.ModelForm):
             "name": "姓名",
             "student_id": "学号",
             "major": "专业",
-            "contact": "联系方式",
+            "contact": "QQ号",
         }
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的姓名"}),
             "student_id": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的学号"}),
             "major": forms.TextInput(attrs={"class": "form-control", "placeholder": "如 软件工程"}),
-            "contact": forms.TextInput(attrs={"class": "form-control", "placeholder": "使用 QQ 号"}),
+            "contact": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的 QQ 号"}),
         }
-        help_texts = {"contact": "选填，方便实验室联系你"}
+        help_texts = {"contact": "必填，方便实验室联系你"}
+
+    def clean_contact(self):
+        qq = self.cleaned_data["contact"].strip()
+        if not qq.isdigit() or not (5 <= len(qq) <= 12):
+            raise forms.ValidationError("请输入正确的 QQ 号（5~12 位数字）")
+        return qq
 
     def clean_student_id(self):
         sid = self.cleaned_data["student_id"].strip()
