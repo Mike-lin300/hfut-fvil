@@ -51,7 +51,7 @@
                             <td>{{ s.round.name }}</td>
                             <td>{{ s.round.get_round_type_display }}</td>
                             <td><span class="badge text-bg-primary">{{ s.grade }}</span></td>
-                            <td class="text-secondary">{{ s.comment|default:"—" }}</td>
+                            <td class="text-secondary text-break" style="max-width: 300px;">{{ s.comment|default:"—" }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
