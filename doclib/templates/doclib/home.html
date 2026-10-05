@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}材料库 - FVIL{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <h1 class="mb-3">材料库</h1>
+    <div class="alert alert-primary d-flex justify-content-between align-items-center">
+        <span>导学案 / 作业 / 附录等系列内容请访问<strong>静态导学站</strong>。</span>
+        <a class="btn btn-accent btn-sm" href="/guide/">进入静态导学站 →</a>
+    </div>
+
+    {% for group in groups %}
+    <h2 class="h5 mt-4 mb-2">{{ group.label }}</h2>
+    <div class="list-group">
+        {% for d in group.items %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="me-3">
+                <div class="fw-semibold">{{ d.title }}</div>
+                {% if d.description %}<small class="text-muted">{{ d.description }}</small>{% endif %}
+                <div>
+                    <small class="text-muted">{{ d.file_size_display }}
+                        {% if d.uploaded_at %} · {{ d.uploaded_at|date:"Y-m-d" }}{% endif %}
+                        {% if d.uploader %} · {{ d.uploader.username }}{% endif %}
+                    </small>
+                </div>
+            </div>
+            <a class="btn btn-outline-accent btn-sm" href="{{ d.file.url }}" download>下载</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% empty %}
+    <div class="alert alert-secondary mt-3">材料库暂无内容，管理员可在后台「资料文档」中上传。</div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "core",
     "lab",
     "recruitment",
+    "doclib",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}提交作业 - FVIL{% endblock %}
+
+{% block content %}
+<div class="py-4" style="max-width: 720px;">
+    <h1 class="mb-1">提交作业</h1>
+    <div class="text-muted mb-3">{{ assignment.batch.name }} · {{ assignment.title }}</div>
+
+    {% if ok %}
+    <div class="alert alert-success">提交成功！同一学号仅可提交一份；如需修改请联系负责人。</div>
+    <a class="btn btn-outline-accent" href="/assignments/">返回作业列表</a>
+    {% else %}
+    <div class="alert alert-primary small">
+        请提交<strong>两份材料</strong>：报告（<code>学号_姓名_report.pdf</code>）+ 源代码（<code>学号_姓名_source.zip</code>）。
+        文件名中的学号/姓名须与表单填写一致，且需在招新报名库中。
+    </div>
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="mb-3">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+            {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger py-2">
+            {% for err in form.non_field_errors %}<div>{{ err }}</div>{% endfor %}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn btn-accent">提交作业</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

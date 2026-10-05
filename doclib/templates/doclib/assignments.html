@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}作业 - FVIL{% endblock %}
+
+{% block content %}
+<div class="py-4">
+    <h1 class="mb-3">作业</h1>
+    <p class="text-muted">下载作业文件（PDF），完成后提交 <strong>报告（PDF）</strong> 与 <strong>源代码（ZIP）</strong> 两份材料。</p>
+
+    {% for a in assignments %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-1">{{ a.title }}</h5>
+                    <div class="text-muted small mb-2">
+                        {{ a.batch.name }}
+                        {% if a.deadline %} · 截止 {{ a.deadline|date:"Y-m-d H:i" }}{% endif %}
+                    </div>
+                    {% if a.description %}<p class="card-text">{{ a.description|linebreaksbr }}</p>{% endif %}
+                </div>
+                <div class="d-flex gap-2 flex-shrink-0">
+                    <a class="btn btn-outline-accent" href="{{ a.file.url }}" download>下载作业</a>
+                    <a class="btn btn-accent" href="/assignments/{{ a.id }}/submit/">提交作业</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-secondary">暂无作业，请关注实验室通知。</div>
+    {% endfor %}
+</div>
+{% endblock %}

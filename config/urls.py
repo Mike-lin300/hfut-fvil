@@ -8,6 +8,7 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 
 from core.views import guide, home
+from doclib.views import assignment_list, assignment_submit
 from lab.views import profile, teachers
 
 admin.site.site_header = "FVIL 飞行器创新实验室管理后台"
@@ -20,6 +21,9 @@ urlpatterns = [
     path("about/", profile, name="lab_profile"),
     path("about/teachers/", teachers, name="lab_teachers"),
     path("recruit/", include("recruitment.urls")),
+    path("doclib/", include("doclib.urls")),
+    path("assignments/", assignment_list, name="assignment_list"),
+    path("assignments/<int:pk>/submit/", assignment_submit, name="assignment_submit"),
     re_path(r"^guide/(?P<path>.*)$", guide, name="guide"),
 ]
 
