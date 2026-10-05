@@ -2,10 +2,12 @@ import io
 import zipfile
 
 from django.contrib import admin, messages
+from django.db.models import Exists, OuterRef
 from django.http import HttpResponse
 from django.utils.html import format_html
 
 from .models import Assignment, Document, Submission
+from recruitment.models import Score
 
 
 @admin.register(Assignment)
@@ -20,7 +22,7 @@ class AssignmentAdmin(admin.ModelAdmin):
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = [
         "assignment", "student_id", "name",
-        "report_link", "source_link", "grade_link", "submitted_at",
+        "report_link", "source_link", "grade_status", "submitted_at",
     ]
     list_filter = ["assignment__batch", "assignment"]
     search_fields = ["student_id", "name"]
@@ -30,6 +32,23 @@ class SubmissionAdmin(admin.ModelAdmin):
     ]
     list_per_page = 50
     actions = ["bulk_download_source"]
+
+    def get_ordering(self, request):
+        """未评分（is_graded=0）排前、已评分沉底；同组内最新提交在前。"""
+        return ["is_graded", "-submitted_at"]
+
+    def get_queryset(self, request):
+        """标注是否已按本作业轮次评分（用于排序与列表直接展示等级）。
+        不调用 super().get_queryset()：其会先按 get_ordering 排序，
+        而 is_graded 需在 annotate 之后才能引用。"""
+        qs = self.model._default_manager.get_queryset()
+        graded = Score.objects.filter(
+            applicant=OuterRef("applicant_id"),
+            round=OuterRef("assignment__round_id"),
+        )
+        return qs.annotate(is_graded=Exists(graded)).prefetch_related(
+            "applicant__scores", "assignment__round"
+        )
 
     @admin.display(description="报告 (PDF)")
     def report_link(self, obj):
@@ -42,9 +61,21 @@ class SubmissionAdmin(admin.ModelAdmin):
     def source_link(self, obj):
         return format_html('<a href="{}" download>下载</a>', obj.source.url)
 
-    @admin.display(description="录入成绩")
-    def grade_link(self, obj):
-        """一键跳转：新标签页打开成绩添加页，学号/作业轮次已预填，只需选等级+评价。"""
+    @admin.display(description="评分")
+    def grade_status(self, obj):
+        """已评分：直接显示等级 + 查看/修改入口；未评分：一键录入成绩（新标签页，预填学号与轮次）。"""
+        score = None
+        if obj.applicant_id and obj.assignment.round_id:
+            score = next(
+                (s for s in obj.applicant.scores.all() if s.round_id == obj.assignment.round_id),
+                None,
+            )
+        if score is not None:
+            return format_html(
+                '<span class="badge text-bg-success">{}</span> '
+                '<a href="/admin/recruitment/score/{}/change/" target="_blank" rel="noopener">查看</a>',
+                score.grade, score.id,
+            )
         if obj.applicant_id and obj.assignment.round_id:
             url = (
                 f"/admin/recruitment/score/add/"
@@ -58,8 +89,9 @@ class SubmissionAdmin(admin.ModelAdmin):
     @admin.display(description="批改说明")
     def grading_note(self, obj):
         return (
-            "工作流：报告列点击「查看/下载」（新标签页预览 PDF）→ 回到本页点「录入成绩」"
-            "（新标签页，学号与作业轮次已预填）→ 选等级 + 评价保存；"
+            "列表按「未评分 → 已评分」排序，未评分的在顶部、已评分的沉底，"
+            "每行评分列直接显示等级。工作流：报告列「查看/下载」（新标签页预览 PDF）"
+            "→ 回本页「录入成绩」（新标签页，学号与作业轮次已预填）→ 选等级 + 评价保存；"
             "学生可在「招新入口 → 成绩查询」查看。"
         )
 
