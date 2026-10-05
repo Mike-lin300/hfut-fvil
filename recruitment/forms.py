@@ -2,9 +2,39 @@ from django import forms
 
 from .models import Applicant
 
+# 专业选择列表：合肥工业大学宣城校区招生专业
+# 来源：2025/2026 年招生计划（掌上高考招生计划库），含物理类 16 个 + 历史类 2 个（网络与新媒体、英语）；
+# 与安徽 2025 年物理类投放一致，并补全宣城校区历史类专业。按拼音首字母排序。
+MAJOR_CHOICES = [
+    ("材料成型及控制工程", "材料成型及控制工程"),
+    ("地球信息科学与技术", "地球信息科学与技术"),
+    ("电气工程与智能控制", "电气工程与智能控制"),
+    ("过程装备与控制工程", "过程装备与控制工程"),
+    ("环境工程", "环境工程"),
+    ("机械工程", "机械工程"),
+    ("经济学", "经济学"),
+    ("能源化学工程", "能源化学工程"),
+    ("软件工程", "软件工程"),
+    ("生物技术", "生物技术"),
+    ("食品营养与健康", "食品营养与健康"),
+    ("水利水电工程", "水利水电工程"),
+    ("土木工程", "土木工程"),
+    ("网络与新媒体", "网络与新媒体"),
+    ("物流管理（数智物流）", "物流管理（数智物流）"),
+    ("新能源材料与器件", "新能源材料与器件"),
+    ("英语", "英语"),
+    ("智能科学与技术", "智能科学与技术"),
+]
+
 
 class SignupForm(forms.ModelForm):
-    """报名表单：姓名/学号/年级/专业/联系方式；不收集意向方向；学号唯一校验。"""
+    """报名表单：姓名/学号/专业（下拉选择）/QQ号；不收集意向方向；学号唯一校验。"""
+
+    major = forms.ChoiceField(
+        label="专业",
+        choices=MAJOR_CHOICES,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
 
     class Meta:
         model = Applicant
@@ -18,10 +48,9 @@ class SignupForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的姓名"}),
             "student_id": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的学号"}),
-            "major": forms.TextInput(attrs={"class": "form-control", "placeholder": "如 软件工程"}),
             "contact": forms.TextInput(attrs={"class": "form-control", "placeholder": "你的 QQ 号"}),
         }
-        help_texts = {"contact": "必填，方便实验室联系你"}
+        help_texts = {"contact": "方便实验室联系你"}
 
     def clean_contact(self):
         qq = self.cleaned_data["contact"].strip()
