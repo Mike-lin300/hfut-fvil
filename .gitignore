@@ -10,6 +10,7 @@ db.sqlite3
 # 上传文件
 media/
 docs/信息材料/
+staticfiles/
 
 # 导学资料库（独立 git 仓库，保持其独立性）
 fvil-ec-guide/
