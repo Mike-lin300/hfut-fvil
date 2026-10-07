@@ -68,6 +68,17 @@ python manage.py runserver
 - 数据库账号、后台账号密码均不写入本文件（见 `.env` 与后台）；
 - `media/` 已被 `.gitignore` 忽略；导学站 `fvil-ec-guide` 为独立仓库，部署时需单独同步。
 
+## 部署与运维（阿里云 Ubuntu 24.04 生产）
+
+- **架构**：Nginx（反向代理 / 静态文件）→ Gunicorn（WSGI，unix socket）→ Django 5.2 → MySQL 8.0（127.0.0.1，不对公网开放）
+- **服务器路径**：项目 `/var/www/hfut-fvil`；静态收集 `staticfiles/`；上传 `media/`；导学站 `fvil-ec-guide/`（独立仓库，目录名需与 `GUIDE_ROOT` 及 Nginx alias 对齐）
+- **代码来源**：GitHub（主仓）+ Gitee（部署镜像），服务器从 Gitee `git pull`
+- **更新流程**：`git pull` → `pip install -r requirements.txt`（有更新时）→ `python manage.py migrate`（模型有变更时）→ `python manage.py collectstatic --noinput`（静态有变更时）→ `sudo systemctl restart gunicorn`（每次必做）
+- **运维速查**：`sudo systemctl status/restart gunicorn`、`sudo systemctl status/restart nginx`、`sudo tail -f /var/log/nginx/error.log`、`sudo journalctl -u gunicorn -f`
+- **安全整改待办**（详见 `docs/部署审查报告.md`）：① Gunicorn 改用非 root 用户；② `.env` 收紧为 600 权限；③ 绑定域名上 HTTPS；④ MySQL 改强密码；⑤ SSH 改密钥登录；⑥ 删除安全组 3389 规则
+
+**部署原则**：服务器只"跑"代码、不"改"代码（`.env` 除外）；数据库与 `media/` 是两份数据，备份迁移都要覆盖。
+
 ## 权限组
 
 后台管理权限按组划分（数据迁移自动创建）：
@@ -84,6 +95,7 @@ python manage.py runserver
 - `docs/FVIL官网建设计划.md`（粗规划）
 - `docs/FVIL官网建设计划-细规划-阶段0-1.md` / `-阶段2.md` / `-阶段3.md`
 - `docs/阶段0完成报告.md` / `docs/阶段3报告-部署前.md`
+- `docs/部署审查报告.md`（阿里云部署流程审查 + 安全整改清单）
 
 ## License
 
