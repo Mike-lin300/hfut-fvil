@@ -1,4 +1,7 @@
 from django import forms
+from django.utils.html import format_html
+
+from captcha.fields import CaptchaField, CaptchaTextInput
 
 from .models import Applicant
 
@@ -39,6 +42,21 @@ class SignupForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-control"}),
     )
 
+    captcha = CaptchaField(
+        label="验证码",
+        error_messages={"invalid": "验证码错误，请重试"},
+        widget=CaptchaTextInput(attrs={"class": "form-control", "placeholder": "输入图片中的字符"}),
+    )
+
+    agree = forms.BooleanField(
+        label=format_html(
+            '我已阅读并同意 <a href="/recruit/privacy/" target="_blank" rel="noopener">'
+            "《报名信息处理与隐私保护声明》</a>"
+        ),
+        error_messages={"required": "请阅读并同意《报名信息处理与隐私保护声明》"},
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
+
     class Meta:
         model = Applicant
         fields = ["name", "student_id", "major", "contact"]
@@ -58,12 +76,12 @@ class SignupForm(forms.ModelForm):
     def clean_contact(self):
         qq = self.cleaned_data["contact"].strip()
         if not qq.isdigit() or not (5 <= len(qq) <= 12):
-            raise forms.ValidationError("请输入正确的 QQ 号（5~12 位数字）")
+            raise forms.ValidationError("请输入正确的 QQ 号")
         return qq
 
     def clean_student_id(self):
         sid = self.cleaned_data["student_id"].strip()
-        if not sid.isdigit() or len(sid) != 10:
+        if not sid.isdigit() or len(sid) != 10 or sid[4:6] != "21":
             raise forms.ValidationError("请输入正确的学号格式")
         if Applicant.objects.filter(student_id=sid).exists():
             raise forms.ValidationError("该学号已报名，请勿重复提交（如有错误，请联系负责人）。")

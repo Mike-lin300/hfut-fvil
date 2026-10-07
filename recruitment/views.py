@@ -27,6 +27,11 @@ def recruit_home(request):
     )
 
 
+def privacy(request):
+    """《报名信息处理与隐私保护声明》页面（报名表单勾选同意后链接至此）。"""
+    return render(request, "recruitment/privacy.html")
+
+
 def signup(request):
     """报名：仅当前存在 status=open 且未过 signup_end 的批次时可提交；
     学号唯一（表单校验 + DB 兜底）；不收集意向方向。"""

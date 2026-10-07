@@ -27,6 +27,24 @@
                 <form method="post" novalidate>
                     {% csrf_token %}
                     {% for field in form %}
+                    {% if field.name == "agree" %}
+                    <div class="form-check mb-3">
+                        {{ field }}
+                        <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% elif field.name == "captcha" %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <div class="d-flex align-items-center gap-2">{{ field }}</div>
+                        <div class="form-text">看不清？点击图片可刷新验证码</div>
+                        {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
                     <div class="mb-3">
                         <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                         {{ field }}
@@ -35,9 +53,27 @@
                         <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
                     </div>
+                    {% endif %}
                     {% endfor %}
                     <button type="submit" class="btn btn-accent w-100">提交报名</button>
                 </form>
+                <script>
+                // 点击验证码图片刷新（django-simple-captcha 的 refresh 接口返回新 key 与图片）
+                document.querySelectorAll('#id_captcha_1').forEach(function (input) {
+                    var img = document.querySelector('.captcha img');
+                    if (!img) return;
+                    img.style.cursor = 'pointer';
+                    img.addEventListener('click', function () {
+                        fetch('/captcha/refresh/')
+                            .then(function (r) { return r.json(); })
+                            .then(function (d) {
+                                img.src = d.image_url;
+                                var key = document.getElementById('id_captcha_0');
+                                if (key) key.value = d.key;
+                            });
+                    });
+                });
+                </script>
                 <p class="text-muted small mt-3 mb-0">报名成功后，可凭学号 + 姓名在「成绩查询」查看各轮次等级。</p>
                 {% endif %}
             </div>

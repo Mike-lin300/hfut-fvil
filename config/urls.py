@@ -17,6 +17,7 @@ admin.site.index_title = "内容管理"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("captcha/", include("captcha.urls")),
     path("", home, name="home"),
     path("about/", profile, name="lab_profile"),
     path("about/teachers/", teachers, name="lab_teachers"),

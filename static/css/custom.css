@@ -169,3 +169,12 @@ a,
         height: 72px;
     }
 }
+
+/* ===== 验证码（报名表单） ===== */
+.captcha img {
+    height: 40px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+}
+
