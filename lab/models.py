@@ -18,6 +18,25 @@ class LabProfile(models.Model):
         "联系方式", max_length=200, blank=True,
         help_text="QQ群 / 邮箱等，展示于页脚与概况页",
     )
+    location = models.CharField(
+        "实验室地点", max_length=200, blank=True,
+        help_text="如：计算机中心楼 302B、310、311",
+    )
+    knowledge = models.TextField(
+        "可学知识", blank=True, help_text="每行一条",
+    )
+    equipment = models.TextField(
+        "设备配置", blank=True, help_text="每行一条",
+    )
+    competitions = models.TextField(
+        "参与竞赛", blank=True, help_text="每行一条",
+    )
+    works = models.TextField(
+        "已有作品", blank=True, help_text="每行一条",
+    )
+    media_accounts = models.TextField(
+        "新媒体账号", blank=True, help_text="B站/抖音等，每行一条",
+    )
 
     class Meta:
         verbose_name = "实验室概况"

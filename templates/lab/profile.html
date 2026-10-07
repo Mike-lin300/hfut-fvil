@@ -10,9 +10,54 @@
     <p class="text-secondary mb-4">成立于 {{ profile.founded_year }} 年 · 合肥工业大学宣城校区</p>
 
     <div class="row g-4">
-        <!-- 简介全文 -->
+        <!-- 主栏：简介 + 分区信息 + 掠影图 -->
         <div class="col-lg-8">
             <div class="lead" style="white-space: pre-line;">{{ profile.intro }}</div>
+
+            {% if profile.knowledge or profile.equipment or profile.competitions or profile.works %}
+            <div class="row g-3 mt-1">
+                {% if profile.knowledge %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title fw-semibold">可学知识</h6>
+                            <p class="card-text text-secondary mb-0" style="white-space: pre-line;">{{ profile.knowledge }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if profile.equipment %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title fw-semibold">设备配置</h6>
+                            <p class="card-text text-secondary mb-0" style="white-space: pre-line;">{{ profile.equipment }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if profile.competitions %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title fw-semibold">参与竞赛</h6>
+                            <p class="card-text text-secondary mb-0" style="white-space: pre-line;">{{ profile.competitions }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if profile.works %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title fw-semibold">已有作品</h6>
+                            <p class="card-text text-secondary mb-0" style="white-space: pre-line;">{{ profile.works }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
 
             <div class="row g-3 mt-2">
                 <div class="col-md-6">
@@ -24,7 +69,7 @@
             </div>
         </div>
 
-        <!-- 信息卡 -->
+        <!-- 侧栏：信息卡 -->
         <div class="col-lg-4">
             <div class="card shadow-sm">
                 <img src="{% static 'img/team.png' %}" class="card-img-top" alt="实验室成员合影">
@@ -33,12 +78,25 @@
                     <p class="card-text"><strong>口号：</strong>{{ profile.slogan }}</p>
                     {% endif %}
                     <p class="card-text"><strong>成立：</strong>{{ profile.founded_year }} 年</p>
+                    {% if profile.location %}
+                    <p class="card-text"><strong>地点：</strong>{{ profile.location }}</p>
+                    {% endif %}
                     {% if profile.contact %}
                     <p class="card-text"><strong>联系方式：</strong>{{ profile.contact }}</p>
+                    {% endif %}
+                    {% if profile.media_accounts %}
+                    <p class="card-text mb-1"><strong>新媒体：</strong></p>
+                    <p class="card-text text-secondary mb-0" style="white-space: pre-line;">{{ profile.media_accounts }}</p>
                     {% endif %}
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 荣誉墙占位（功能待开发） -->
+    <div class="placeholder-block mt-4">
+        <div class="fw-semibold">荣誉墙</div>
+        <div class="small">用于集中展示实验室历届获奖证书，功能待开发。</div>
     </div>
     {% else %}
     <p class="text-secondary">请在后台「实验室概况」中填写简介。</p>

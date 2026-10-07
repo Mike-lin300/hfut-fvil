@@ -111,10 +111,58 @@ a,
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* ===== 占位块（荣誉墙 / 学生成员等功能待开发区域） ===== */
+.placeholder-block {
+    border: 1px dashed rgba(12, 60, 140, 0.25);
+    border-radius: 0.75rem;
+    background-color: #f7f9fc;
+    color: #8a94a6;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
 /* ===== 响应式（手机 375px） ===== */
 @media (max-width: 576px) {
+    /* 手机端 hero 不再固定 100vh：高度按图片比例自适应（16:10），
+       避免横图被竖长容器裁剪到只剩一小截；桌面端保持全屏。 */
+    .hero-carousel {
+        height: auto;
+        min-height: 0;
+    }
+
+    .hero-carousel .carousel-inner,
+    .hero-carousel .carousel-item {
+        height: auto;
+    }
+
+    .hero-img {
+        height: auto;
+        aspect-ratio: 16 / 10;
+    }
+
+    .hero-brand {
+        padding: 0.75rem 0.75rem !important;
+    }
+
+    .hero-brand img {
+        height: 56px !important;
+        width: 56px !important;
+    }
+
     .hero-brand h1 {
-        font-size: 1.75rem; /* 移动端防止口号与徽章横向溢出 */
+        font-size: 1.4rem; /* 移动端防止口号与徽章横向溢出 */
+    }
+
+    .hero-brand p.text-white-50 {
+        display: none; /* 移动端隐藏英文副标题行，保持紧凑 */
+    }
+
+    .hero-actions {
+        padding: 0.75rem !important;
+    }
+
+    .hero-actions .btn {
+        font-size: 0.875rem;
     }
 
     .hero-logo {

@@ -5,7 +5,9 @@ from .models import Applicant
 # 专业选择列表：合肥工业大学宣城校区招生专业
 # 来源：2025/2026 年招生计划（掌上高考招生计划库），含物理类 16 个 + 历史类 2 个（网络与新媒体、英语）；
 # 与安徽 2025 年物理类投放一致，并补全宣城校区历史类专业。按拼音首字母排序。
+# 首项为空占位：默认不选中任何专业，必须由报名者主动选择。
 MAJOR_CHOICES = [
+    ("", "请选择专业"),
     ("材料成型及控制工程", "材料成型及控制工程"),
     ("地球信息科学与技术", "地球信息科学与技术"),
     ("电气工程与智能控制", "电气工程与智能控制"),
@@ -33,6 +35,7 @@ class SignupForm(forms.ModelForm):
     major = forms.ChoiceField(
         label="专业",
         choices=MAJOR_CHOICES,
+        error_messages={"required": "请选择专业"},
         widget=forms.Select(attrs={"class": "form-control"}),
     )
 

@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}指导老师 - FVIL{% endblock %}
+{% block title %}实验室成员 - FVIL{% endblock %}
 
 {% block content %}
 <div class="py-4">
-    <h1 class="mb-4">指导老师</h1>
+    <h1 class="mb-4">实验室成员</h1>
     {% if teachers %}
-    <div class="row g-4">
+    <h2 class="h5 text-secondary mb-3">指导老师</h2>
+    <div class="row g-4 mb-4">
         {% for t in teachers %}
         <div class="col-md-6 col-lg-4">
             <div class="card h-100 shadow-sm">
@@ -22,11 +23,17 @@
                     <h5 class="card-title">{{ t.name }}</h5>
                     {% if t.title %}<h6 class="card-subtitle mb-2 text-muted">{{ t.title }}</h6>{% endif %}
                     {% if t.research %}<p class="card-text"><strong>研究方向：</strong>{{ t.research }}</p>{% endif %}
-                    {% if t.bio %}<p class="card-text text-secondary">{{ t.bio|truncatechars:80 }}</p>{% endif %}
+                    {% if t.bio %}<p class="card-text text-secondary mb-0">{{ t.bio }}</p>{% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
+    </div>
+
+    <h2 class="h5 text-secondary mb-3">学生成员</h2>
+    <div class="placeholder-block mb-4">
+        <div class="fw-semibold">学生成员</div>
+        <div class="small">实验室成员风采展示功能待开发，敬请期待。</div>
     </div>
     {% else %}
     <p class="text-secondary">请在后台「指导老师」中添加老师信息。</p>
