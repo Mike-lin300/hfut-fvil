@@ -58,21 +58,24 @@
                     <button type="submit" class="btn btn-accent w-100">提交报名</button>
                 </form>
                 <script>
-                // 点击验证码图片刷新（django-simple-captcha 的 refresh 接口返回新 key 与图片）
-                document.querySelectorAll('#id_captcha_1').forEach(function (input) {
-                    var img = document.querySelector('.captcha img');
+                // 点击验证码图片刷新（captcha 0.7 的 refresh 视图要求 XHR 请求头）
+                (function () {
+                    var img = document.querySelector('img.captcha');
                     if (!img) return;
                     img.style.cursor = 'pointer';
                     img.addEventListener('click', function () {
-                        fetch('/captcha/refresh/')
+                        fetch('/captcha/refresh/', {
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
                             .then(function (r) { return r.json(); })
                             .then(function (d) {
                                 img.src = d.image_url;
                                 var key = document.getElementById('id_captcha_0');
                                 if (key) key.value = d.key;
-                            });
+                            })
+                            .catch(function () { /* 刷新失败时保留原图，可再次点击 */ });
                     });
-                });
+                })();
                 </script>
                 <p class="text-muted small mt-3 mb-0">报名成功后，可凭学号 + 姓名在「成绩查询」查看各轮次等级。</p>
                 {% endif %}
