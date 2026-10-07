@@ -64,7 +64,10 @@
 <!-- 简介摘要 -->
 <section class="container py-4">
     <p class="lead text-secondary mb-2">{{ profile.intro|truncatechars:160 }}</p>
-    <a href="/about/">了解更多 →</a>
+    <div class="d-flex gap-3 align-items-center">
+        <a href="/about/">了解更多 →</a>
+        <a class="btn btn-outline-accent btn-sm" href="/admin/" target="_blank" rel="noopener">管理员登录</a>
+    </div>
 </section>
 {% else %}
 <div class="container text-center py-5">
