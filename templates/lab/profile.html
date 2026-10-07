@@ -74,9 +74,6 @@
             <div class="card shadow-sm">
                 <img src="{% static 'img/team.png' %}" class="card-img-top" alt="实验室成员合影">
                 <div class="card-body">
-                    {% if profile.slogan %}
-                    <p class="card-text"><strong>口号：</strong>{{ profile.slogan }}</p>
-                    {% endif %}
                     <p class="card-text"><strong>成立：</strong>{{ profile.founded_year }} 年</p>
                     {% if profile.location %}
                     <p class="card-text"><strong>地点：</strong>{{ profile.location }}</p>
