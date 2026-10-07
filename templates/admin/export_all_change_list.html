@@ -1,0 +1,8 @@
+{% extends "admin/change_list.html" %}
+{% load admin_urls %}
+{% block object-tools %}
+<ul class="object-tools">
+    <li><a class="addlink" href="{% url opts|admin_urlname:'export-all' %}">导出全部（Excel）</a></li>
+</ul>
+{{ block.super }}
+{% endblock %}

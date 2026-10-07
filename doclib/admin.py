@@ -1,10 +1,15 @@
 import io
+import os
 import zipfile
 
 from django.contrib import admin, messages
+from django.core.exceptions import PermissionDenied
 from django.db.models import Exists, OuterRef
 from django.http import HttpResponse
+from django.urls import path
 from django.utils.html import format_html
+
+from utils.excel import export_xlsx_response
 
 from .models import Assignment, Document, Submission
 from recruitment.models import Score
@@ -16,6 +21,47 @@ class AssignmentAdmin(admin.ModelAdmin):
     list_filter = ["batch"]
     search_fields = ["title", "description"]
     readonly_fields = ["round", "created_at"]
+    actions = ["export_selected_xlsx"]
+    change_list_template = "admin/export_all_change_list.html"
+
+    ASSIGNMENT_HEADERS = ["批次", "标题", "截止时间", "文件", "创建时间"]
+
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return [
+            path(
+                "export-all/", self.admin_site.admin_view(self.export_all_view),
+                name="%s_%s_export-all" % info,
+            ),
+        ] + urls
+
+    def export_all_view(self, request):
+        """独立按钮：一键导出全部作业。"""
+        if not request.user.has_perm("doclib.change_assignment"):
+            raise PermissionDenied
+        return export_xlsx_response(
+            self.ASSIGNMENT_HEADERS, self._assignment_rows(Assignment.objects.all()),
+            "fvil_assignments_all.xlsx",
+        )
+
+    def _assignment_rows(self, qs):
+        rows = []
+        for a in qs.select_related("batch").order_by("-id"):
+            rows.append([
+                a.batch.name, a.title,
+                a.deadline.strftime("%Y-%m-%d %H:%M") if a.deadline else "",
+                os.path.basename(a.file.name) if a.file.name else "",
+                a.created_at.strftime("%Y-%m-%d %H:%M") if a.created_at else "",
+            ])
+        return rows
+
+    @admin.action(description="导出 Excel（选中作业）")
+    def export_selected_xlsx(self, request, queryset):
+        return export_xlsx_response(
+            self.ASSIGNMENT_HEADERS, self._assignment_rows(queryset),
+            "fvil_assignments_selected.xlsx",
+        )
 
 
 @admin.register(Submission)
@@ -31,7 +77,56 @@ class SubmissionAdmin(admin.ModelAdmin):
         "submitted_at", "grading_note",
     ]
     list_per_page = 50
-    actions = ["bulk_download_source"]
+    actions = ["bulk_download_source", "export_selected_xlsx"]
+    change_list_template = "admin/export_all_change_list.html"
+
+    SUBMISSION_HEADERS = ["作业", "学号", "姓名", "报告文件", "源代码文件", "提交时间", "评分"]
+
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return [
+            path(
+                "export-all/", self.admin_site.admin_view(self.export_all_view),
+                name="%s_%s_export-all" % info,
+            ),
+        ] + urls
+
+    def export_all_view(self, request):
+        """独立按钮：一键导出全部作业提交。"""
+        if not request.user.has_perm("doclib.change_submission"):
+            raise PermissionDenied
+        return export_xlsx_response(
+            self.SUBMISSION_HEADERS, self._submission_rows(Submission.objects.all()),
+            "fvil_submissions_all.xlsx",
+        )
+
+    def _submission_rows(self, qs):
+        rows = []
+        for s in qs.select_related("assignment__batch", "applicant").order_by(
+            "assignment_id", "student_id"
+        ):
+            grade = ""
+            if s.applicant_id and s.assignment.round_id:
+                grade = (
+                    Score.objects.filter(
+                        applicant_id=s.applicant_id, round_id=s.assignment.round_id
+                    ).values_list("grade", flat=True).first()
+                ) or ""
+            rows.append([
+                s.assignment.title, s.student_id, s.name,
+                os.path.basename(s.report.name), os.path.basename(s.source.name),
+                s.submitted_at.strftime("%Y-%m-%d %H:%M") if s.submitted_at else "",
+                grade,
+            ])
+        return rows
+
+    @admin.action(description="导出 Excel（选中提交）")
+    def export_selected_xlsx(self, request, queryset):
+        return export_xlsx_response(
+            self.SUBMISSION_HEADERS, self._submission_rows(queryset),
+            "fvil_submissions_selected.xlsx",
+        )
 
     def get_ordering(self, request):
         """未评分（is_graded=0）排前、已评分沉底；同组内最新提交在前。"""
@@ -124,6 +219,47 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = ["title", "category", "file", "uploaded_at", "uploader"]
     list_filter = ["category"]
     search_fields = ["title", "description"]
+    actions = ["export_selected_xlsx"]
+    change_list_template = "admin/export_all_change_list.html"
+
+    DOCUMENT_HEADERS = ["标题", "分类", "文件", "上传人", "上传时间"]
+
+    def get_urls(self):
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+        return [
+            path(
+                "export-all/", self.admin_site.admin_view(self.export_all_view),
+                name="%s_%s_export-all" % info,
+            ),
+        ] + urls
+
+    def export_all_view(self, request):
+        """独立按钮：一键导出全部材料。"""
+        if not request.user.has_perm("doclib.change_document"):
+            raise PermissionDenied
+        return export_xlsx_response(
+            self.DOCUMENT_HEADERS, self._document_rows(Document.objects.all()),
+            "fvil_documents_all.xlsx",
+        )
+
+    def _document_rows(self, qs):
+        rows = []
+        for d in qs.select_related("uploader").order_by("-id"):
+            rows.append([
+                d.title, d.get_category_display(),
+                os.path.basename(d.file.name) if d.file.name else "",
+                d.uploader.username if d.uploader else "",
+                d.uploaded_at.strftime("%Y-%m-%d %H:%M") if d.uploaded_at else "",
+            ])
+        return rows
+
+    @admin.action(description="导出 Excel（选中材料）")
+    def export_selected_xlsx(self, request, queryset):
+        return export_xlsx_response(
+            self.DOCUMENT_HEADERS, self._document_rows(queryset),
+            "fvil_documents_selected.xlsx",
+        )
 
     def save_model(self, request, obj, form, change):
         """上传材料时自动记录上传人。"""
